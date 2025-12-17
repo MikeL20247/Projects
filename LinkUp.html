@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkUp - Connect with Student Tutors</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    
+    <style>
+        :root {
+    --primary: #667eea;
+    --primary-dark: #5a67d8;
+    --secondary: #764ba2;
+    --bg-light: #f7f8fa;
+    --text-dark: #404145;
+    --text-muted: #62646a;
+    --border-light: #dadbdd;
+    --success: #2e7d32;
+    --danger: #dc3545;
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #f7f8fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #62646a;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .nav-link.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .auth-container h1 {
+            color: #404145;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .auth-container p {
+            color: #62646a;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #62646a;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dadbdd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        h1, h2, h3 {
+    letter-spacing: -0.5px;
+}
+
+p {
+    line-height: 1.6;
+}
+
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: #f7f8fa;
+            border: 2px dashed #dadbdd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .profile-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 20px auto;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: 600;
+            overflow: hidden;
+        }
+
+        .profile-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+               .btn {
+            background: #667eea;
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 1px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f2ff;
+        }
+
+
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f7f8fa;
+            border-radius: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+        }
+
+        /* Home Page */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .search-bar {
+            max-width: 700px;
+            margin: 30px auto 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        .search-bar button {
+            width: auto;
+            padding: 12px 35px;
+        }
+
+        /* Trending Section */
+        .trending-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .trending-section h2 {
+            color: #404145;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trending-tutors {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .trending-card {
+            min-width: 200px;
+           background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+color: white;
+
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .trending-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .trending-card .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: 600;
+            color: #5c45d3;
+            overflow: hidden;
+        }
+
+        .trending-card .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .trending-card h4 {
+            color: #000000;
+            margin-bottom: 5px;
+        }
+
+        .trending-card .students-count {
+            color: #ffffff;
+            font-size: 0.9em;
+        }
+
+        /* Tutors Grid */
+        .tutors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .tutor-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .tutor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+}
+
+
+        .tutor-card-header {
+            padding: 25px 20px 15px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tutor-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            font-weight: 600;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+
+        .tutor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tutor-name {
+            font-weight: 600;
+            font-size: 1.2em;
+            color: #404145;
+            margin-bottom: 5px;
+        }
+
+        .tutor-level {
+            color: #62646a;
+            font-size: 0.9em;
+        }
+
+        .tutor-card-body {
+            padding: 20px;
+        }
+
+        .tutor-info-item {
+            margin-bottom: 15px;
+        }
+
+        .tutor-info-label {
+            color: #95979d;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .tutor-info-value {
+            color: #404145;
+            font-weight: 500;
+        }
+
+        .courses-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .course-tag {
+            background: #f0f2ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .availability-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .time-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .students-taught {
+            text-align: center;
+            padding: 12px;
+            background: #f7f8fa;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Profile Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+        /* Chat Styles */
+.chat-body {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f7f8fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.message {
+    max-width: 75%;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border-radius: 15px;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.message.sent {
+    background: #667eea;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+}
+
+.message.received {
+    background: white;
+    border: 1px solid #dadbdd;
+    color: #404145;
+    border-bottom-left-radius: 5px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: #404145;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #62646a;
+            padding: 0;
+            width: auto;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .telegram-link {
+            display: inline-block;
+            background: #0088cc;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .telegram-link:hover {
+            background: #006699;
+        }
+
+        .tutor-setup {
+            background: #f7f8fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            border: 2px solid #dadbdd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-slot:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .time-slot.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .course-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .course-chip {
+            padding: 10px;
+            border: 2px solid #dadbdd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .course-chip:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .course-chip, .time-slot {
+    user-select: none;
+}
+
+
+        .course-chip.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-link {
+                font-size: 0.9em;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .trending-tutors {
+                gap: 15px;
+            }
+
+            .tutors-grid {
+                grid-template-columns: 1fr;
+            }
+          
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo" onclick="showPage('home')">LinkUp</a>
+            <div class="nav-links">
+                <a class="nav-link" onclick="showPage('home')">Home</a>
+                <a class="nav-link" onclick="showPage('tutors')">Tutors</a>
+                <a class="nav-link auth-link" onclick="showPage('signup')">Sign Up / Login</a>
+                <div class="profile-icon" id="profileIcon" onclick="showProfileModal()" style="display: none;">
+                    <span id="profileInitial">U</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Chat Modal -->
+<div class="modal" id="chatModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 id="chatTutorName">Chat</h2>
+            <button class="close-btn" onclick="closeChat()">×</button>
+        </div>
+
+        <div class="modal-body chat-body">
+            <div class="chat-messages" id="chatMessages"></div>
+
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message...">
+                <button class="btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <h1>Find Your Perfect Study Partner</h1>
+                <p>Connect with verified student tutors in your college and level</p>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search for courses (e.g., MTH201, PHY101)">
+                    <button class="btn" onclick="searchCourses()">Search</button>
+                </div>
+            </div>
+
+            <div class="trending-section">
+                <h2>🔥 Trending Tutors</h2>
+                <div class="trending-tutors" id="trendingTutors"></div>
+            </div>
+
+            <h2 style="color: #404145; margin-bottom: 25px;">Popular Categories</h2>
+            <div class="tutors-grid" id="homeTutors"></div>
+        </div>
+
+        <!-- Tutors Page -->
+        <div id="tutors" class="page">
+            <h1 style="color: #404145; margin-bottom: 30px;">All Tutors</h1>
+            <div class="tutors-grid" id="allTutors"></div>
+        </div>
+
+        <!-- Sign Up Page -->
+        <div id="signup" class="page">
+            <div class="auth-container">
+                <h1>Join LinkUp</h1>
+                <p>Create your account and start learning</p>
+                
+                <div class="profile-preview" id="signupPreview">
+                    <span id="signupInitial">?</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="signupProfilePic" accept="image/*" onchange="previewImage('signup')">
+                        <label for="signupProfilePic" class="file-input-label">
+                            📷 Choose a profile picture
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" oninput="updateInitial('signup')">
+                </div>
+
+                <div class="form-group">
+                    <label>Level</label>
+                    <select id="signupLevel">
+                        <option value="">Select your level</option>
+                        <option value="100">100 Level</option>
+                        <option value="200">200 Level</option>
+                        <option value="300">300 Level</option>
+                        <option value="400">400 Level</option>
+                        <option value="500">500 Level</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>College</label>
+                    <input type="text" id="signupCollege" placeholder="e.g. College of Engineering">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="your.email@university.edu">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="signupIsTutor" onchange="toggleSignupTutorSection()">
+                    <label for="signupIsTutor">I want to be a tutor</label>
+                </div>
+
+                <div id="signupTutorSection" style="display: none;">
+                    <div class="tutor-setup">
+                        <h3 style="color: #404145; margin-bottom: 15px;">Tutor Information</h3>
+                        
+                        <div class="form-group">
+                            <label>Courses You Can Teach</label>
+                            <div class="course-selection" id="signupCanTeach"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Available Times</label>
+                            <div class="time-slots" id="signupTimeSlots">
+                                <div class="time-slot" onclick="toggleSelection(this)">Mon 9AM-12PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Mon 2PM-5PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Tue 9AM-12PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Tue 2PM-5PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Wed 9AM-12PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Wed 2PM-5PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Thu 9AM-12PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Thu 2PM-5PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Fri 9AM-12PM</div>
+                                <div class="time-slot" onclick="toggleSelection(this)">Fri 2PM-5PM</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telegram Username (for group invite)</label>
+                            <input type="text" id="signupTelegram" placeholder="@yourusername">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="handleSignup()">Create Account</button>
+                <button class="btn btn-secondary" onclick="showPage('login')">Already have an account? Login</button>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login" class="page">
+            <div class="auth-container">
+                <h1>Welcome Back!</h1>
+                <p>Login to continue your learning journey</p>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="your.email@university.edu">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                </div>
+
+                <button class="btn" onclick="handleLogin()">Login</button>
+                <button class="btn btn-secondary" onclick="showPage('signup')">Don't have an account? Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Profile</h2>
+                <button class="close-btn" onclick="closeProfileModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-header">
+                    <div class="profile-preview" id="profileModalPreview">
+                        <span id="profileModalInitial">U</span>
+                    </div>
+                    <h3 id="profileModalName" style="color: #404145; margin-bottom: 5px;"></h3>
+                    <p id="profileModalInfo" style="color: #62646a;"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Update Profile Picture</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="profilePicUpdate" accept="image/*" onchange="updateProfilePic()">
+                        <label for="profilePicUpdate" class="file-input-label">
+                            📷 Choose new picture
+                        </label>
+                    </div>
+                </div>
+
+                <div id="profileTutorInfo"></div>
+
+                <button class="btn" style="background: #dc3545; margin-top: 20px;" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Detail Modal -->
+    <div class="modal" id="tutorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tutor Profile</h2>
+                <button class="close-btn" onclick="closeTutorModal()">×</button>
+            </div>
+            <div class="modal-body" id="tutorModalBody"></div>
+        </div>
+    </div>
+    <!-- Chat Modal -->
+<div class="modal" id="chatModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 id="chatTutorName">Chat</h2>
+            <button class="close-btn" onclick="closeChat()">×</button>
+        </div>
+
+        <div class="modal-body chat-body">
+            <div class="chat-messages" id="chatMessages"></div>
+
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message...">
+                <button class="btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        let users = {};
+        let currentUser = null;
+
+        const coursesByLevel = {
+            '100': ['MTH101', 'PHY101', 'CHM101', 'GST101', 'GST102', 'ENG101', 'BIO101'],
+            '200': ['MTH201', 'PHY201', 'CHM201', 'GST201', 'ENG201', 'STA201', 'ECO201'],
+            '300': ['MTH301', 'PHY301', 'CHM301', 'ENG301', 'CSC301', 'BIO301'],
+            '400': ['MTH401', 'PHY401', 'Project', 'Research', 'Seminar'],
+            '500': ['Thesis', 'Advanced Seminar', 'Professional Practice']
+        };
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (pageId !== 'signup' && pageId !== 'login') {
+                document.querySelectorAll('.nav-link').forEach(l => {
+                    if (l.textContent.toLowerCase().includes(pageId)) {
+                        l.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function updateInitial(type) {
+            const name = document.getElementById(`${type}Name`).value;
+            const initial = name.charAt(0).toUpperCase() || '?';
+            document.getElementById(`${type}Initial`).textContent = initial;
+        }
+
+        function previewImage(type) {
+            const input = document.getElementById(`${type}ProfilePic`);
+            const preview = document.getElementById(`${type}Preview`);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function toggleSignupTutorSection() {
+            const section = document.getElementById('signupTutorSection');
+            const isChecked = document.getElementById('signupIsTutor').checked;
+            section.style.display = isChecked ? 'block' : 'none';
+            
+            if (isChecked) {
+                loadSignupCourses();
+            }
+        }
+
+        function loadSignupCourses() {
+            const level = document.getElementById('signupLevel').value;
+            const container = document.getElementById('signupCanTeach');
+            container.innerHTML = '';
+            
+            if (level && coursesByLevel[level]) {
+                coursesByLevel[level].forEach(course => {
+                    const chip = document.createElement('div');
+                    chip.className = 'course-chip';
+                    chip.textContent = course;
+                    chip.onclick = () => toggleSelection(chip);
+                    container.appendChild(chip);
+                });
+            }
+        }
+
+        document.getElementById('signupLevel').addEventListener('change', function() {
+            if (document.getElementById('signupIsTutor').checked) {
+                loadSignupCourses();
+            }
+        });
+
+        function toggleSelection(element) {
+            element.classList.toggle('selected');
+        }
+
+        function handleSignup() {
+            const name = document.getElementById('signupName').value;
+            const level = document.getElementById('signupLevel').value;
+            const college = document.getElementById('signupCollege').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const isTutor = document.getElementById('signupIsTutor').checked;
+
+            if (!name || !level || !college || !email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            if (users[email]) {
+                alert('User already exists. Please login.');
+                return;
+            }
+
+            const profilePic = document.querySelector('#signupPreview img')?.src || null;
+            
+            const userData = {
+                name, level, college, email, password, isTutor,
+                profilePic,
+                studentsTaught: 0
+            };
+
+            if (isTutor) {
+                const canTeach = Array.from(document.querySelectorAll('#signupCanTeach .course-chip.selected'))
+                    .map(chip => chip.textContent);
+                const availableTimes = Array.from(document.querySelectorAll('#signupTimeSlots .time-slot.selected'))
+                    .map(slot => slot.textContent);
+                const telegram = document.getElementById('signupTelegram').value;
+
+                if (canTeach.length === 0 || availableTimes.length === 0) {
+                    alert('Please select courses you can teach and your available times');
+                    return;
+                }
+
+                userData.canTeach = canTeach;
+                userData.availableTimes = availableTimes;
+                userData.telegram = telegram;
+            }
+
+            users[email] = userData;
+            alert('Account created successfully! Please login.');
+            showPage('login');
+            
+            // Reset form
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupLevel').value = '';
+            document.getElementById('signupCollege').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupIsTutor').checked = false;
+            document.getElementById('signupTutorSection').style.display = 'none';
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (!users[email]) {
+                alert('User not found. Please sign up.');
+                return;
+            }
+
+            if (users[email].password !== password) {
+                alert('Incorrect password');
+                return;
+            }
+
+            currentUser = users[email];
+            updateNavbar();
+            loadHomePage();
+            loadTutorsPage();
+            showPage('home');
+        }
+
+        function updateNavbar() {
+            const authLink = document.querySelector('.auth-link');
+            const profileIcon = document.getElementById('profileIcon');
+
+            if (currentUser) {
+                authLink.style.display = 'none';
+                profileIcon.style.display = 'flex';
+                
+                if (currentUser.profilePic) {
+                    profileIcon.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+                } else {
+                    profileIcon.innerHTML = `<span id="profileInitial">${currentUser.name.charAt(0).toUpperCase()}</span>`;
+                }
+            } else {
+                authLink.style.display = 'block';
+                profileIcon.style.display = 'none';
+            }
+        }
+
+        function loadHomePage() {
+            loadTrendingTutors();
+            loadHomeTutors();
+        }
+
+        function loadTrendingTutors() {
+            const container = document.getElementById('trendingTutors');
+            const tutors = Object.values(users)
+                .filter(u => u.isTutor)
+                .sort((a, b) => b.studentsTaught - a.studentsTaught)
+                .slice(0, 5);
+
+            container.innerHTML = '';
+            tutors.forEach(tutor => {
+                const card = document.createElement('div');
+                card.className = 'trending-card';
+                card.onclick = () => showTutorDetail(tutor);
+                card.innerHTML = `
+                    <div class="profile-pic">
+                        ${tutor.profilePic ? `<img src="${tutor.profilePic}" alt="${tutor.name}">` : tutor.name.charAt(0)}
+                    </div>
+                    <h4>${tutor.name}</h4>
+                    <div class="students-count">👥 ${tutor.studentsTaught} students</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function loadHomeTutors() {
+            const container = document.getElementById('homeTutors');
+            const tutors = Object.values(users)
+                .filter(u => u.isTutor)
+                .slice(0, 6);
+
+            container.innerHTML = '';
+            tutors.forEach(tutor => {
+                container.appendChild(createTutorCard(tutor));
+            });
+        }
+
+        function loadTutorsPage() {
+            const container = document.getElementById('allTutors');
+            const tutors = Object.values(users).filter(u => u.isTutor);
+
+            container.innerHTML = '';
+            if (tutors.length === 0) {
+                container.innerHTML = '<p style="color: #62646a; text-align: center; padding: 40px;">No tutors available yet. Be the first to join!</p>';
+                return;
+            }
+
+            tutors.forEach(tutor => {
+                container.appendChild(createTutorCard(tutor));
+            });
+        }
+
+        function createTutorCard(tutor) {
+            const card = document.createElement('div');
+            card.className = 'tutor-card';
+            card.onclick = () => showTutorDetail(tutor);
+            
+            card.innerHTML = `
+                <div class="tutor-card-header">
+                    <div class="tutor-avatar">
+                        ${tutor.profilePic ? `<img src="${tutor.profilePic}" alt="${tutor.name}">` : tutor.name.charAt(0)}
+                    </div>
+                    <div class="tutor-name">${tutor.name}</div>
+                    <div class="tutor-level">${tutor.college}</div>
+                    <div class="tutor-level">Level ${tutor.level}</div>
+                </div>
+                <div class="tutor-card-body">
+                    <div class="tutor-info-item">
+                        <div class="tutor-info-label">Teaches</div>
+                        <div class="courses-tags">
+                            ${tutor.canTeach.map(c => `<span class="course-tag">${c}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="tutor-info-item">
+                        <div class="tutor-info-label">Available</div>
+                        <div class="availability-times">
+                            ${tutor.availableTimes.slice(0, 2).map(t => `<span class="time-badge">${t}</span>`).join('')}
+                            ${tutor.availableTimes.length > 2 ? `<span class="time-badge">+${tutor.availableTimes.length - 2} more</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="students-taught">
+                        👥 ${tutor.studentsTaught} Students Taught
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function showTutorDetail(tutor) {
+            const modal = document.getElementById('tutorModal');
+            const body = document.getElementById('tutorModalBody');
+            
+            body.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-preview">
+                        ${tutor.profilePic ? `<img src="${tutor.profilePic}" alt="${tutor.name}">` : tutor.name.charAt(0)}
+                    </div>
+                    <h3 style="color: #404145; margin-bottom: 5px;">${tutor.name}</h3>
+                    <p style="color: #62646a;">${tutor.college} • Level ${tutor.level}</p>
+                </div>
+
+                <div class="tutor-info-item">
+                    <div class="tutor-info-label">Courses</div>
+                    <div class="courses-tags">
+                        ${tutor.canTeach.map(c => `<span class="course-tag">${c}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="tutor-info-item">
+                    <div class="tutor-info-label">Available Times</div>
+                    <div class="availability-times">
+                        ${tutor.availableTimes.map(t => `<span class="time-badge">${t}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="students-taught">
+                    👥 ${tutor.studentsTaught} Students Taught
+                </div>
+
+                ${tutor.telegram ? `
+                    <a href="https://t.me/+hpGJK_BBM3owZjE0" target="_blank" class="telegram-link">
+                        📱 Join Telegram Group
+                    </a>
+                ` : ''}
+
+                <button class="btn" onclick="openChat('${tutor.email}', '${tutor.name}')" style="margin-top: 20px;">
+    💬 Chat with Tutor
+</button>
+
+            `;
+
+            
+            
+            modal.classList.add('active');
+        }
+        
+
+        function closeTutorModal() {
+            document.getElementById('tutorModal').classList.remove('active');
+        }
+
+        function showProfileModal() {
+            if (!currentUser) return;
+            
+            const modal = document.getElementById('profileModal');
+            const preview = document.getElementById('profileModalPreview');
+            const name = document.getElementById('profileModalName');
+            const info = document.getElementById('profileModalInfo');
+            const tutorInfo = document.getElementById('profileTutorInfo');
+            
+            if (currentUser.profilePic) {
+                preview.innerHTML = `<img src="${currentUser.profilePic}" alt="Profile">`;
+            } else {
+                preview.innerHTML = `<span id="profileModalInitial">${currentUser.name.charAt(0)}</span>`;
+            }
+            
+            name.textContent = currentUser.name;
+            info.textContent = `${currentUser.college} • Level ${currentUser.level}`;
+            
+            if (currentUser.isTutor) {
+                tutorInfo.innerHTML = `
+                    <div class="tutor-setup">
+                        <h3 style="color: #404145; margin-bottom: 15px;">Tutor Information</h3>
+                        <div class="tutor-info-item">
+                            <div class="tutor-info-label">Teaching</div>
+                            <div class="courses-tags">
+                                ${currentUser.canTeach.map(c => `<span class="course-tag">${c}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="tutor-info-item">
+                            <div class="tutor-info-label">Available Times</div>
+                            <div class="availability-times">
+                                ${currentUser.availableTimes.map(t => `<span class="time-badge">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="students-taught">
+                            👥 ${currentUser.studentsTaught} Students Taught
+                        </div>
+                        ${currentUser.telegram ? `
+                            <a href="https://t.me/${currentUser.telegram.replace('@', '')}" target="_blank" class="telegram-link">
+                                📱 Your Telegram Group
+                            </a>
+                        ` : ''}
+                    </div>
+                `;
+            } else {
+                tutorInfo.innerHTML = '';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        function updateProfilePic() {
+            const input = document.getElementById('profilePicUpdate');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUser.profilePic = e.target.result;
+                    users[currentUser.email].profilePic = e.target.result;
+                    updateNavbar();
+                    showProfileModal();
+                    alert('Profile picture updated!');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            updateNavbar();
+            closeProfileModal();
+            showPage('home');
+        }
+
+        function contactTutor(name) {
+            alert(`To contact ${name}, use their Telegram link or the platform messaging system (coming soon!)`);
+        }
+
+        function searchCourses() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) return;
+            
+            const container = document.getElementById('allTutors');
+            const tutors = Object.values(users).filter(u => 
+                u.isTutor && u.canTeach.some(c => c.toLowerCase().includes(query))
+            );
+            
+            container.innerHTML = '';
+            if (tutors.length === 0) {
+                container.innerHTML = '<p style="color: #62646a; text-align: center; padding: 40px;">No tutors found for this course.</p>';
+            } else {
+                tutors.forEach(tutor => {
+                    container.appendChild(createTutorCard(tutor));
+                });
+            }
+            
+            showPage('tutors');
+        }
+let activeChatTutor = null;
+let chats = {};
+
+function openChat(email, name) {
+    if (!currentUser) {
+        alert('Please login to chat');
+        return;
+    }
+
+    activeChatTutor = email;
+    document.getElementById('chatTutorName').textContent = `Chat with ${name}`;
+
+    if (!chats[email]) chats[email] = [];
+
+    renderMessages();
+    document.getElementById('chatModal').classList.add('active');
+}
+
+function closeChat() {
+    document.getElementById('chatModal').classList.remove('active');
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    chats[activeChatTutor].push({ sender: 'me', text });
+    input.value = '';
+    renderMessages();
+
+    setTimeout(() => {
+        chats[activeChatTutor].push({
+            sender: 'tutor',
+            text: 'Thanks for your message! I’ll reply shortly.'
+        });
+        renderMessages();
+    }, 1000);
+}
+
+function renderMessages() {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+
+    chats[activeChatTutor].forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `message ${msg.sender === 'me' ? 'sent' : 'received'}`;
+        div.textContent = msg.text;
+        container.appendChild(div);
+    });
+
+    container.scrollTop = container.scrollHeight;
+}
+
+        // Initialize with demo data
+        users['demo@university.edu'] = {
+            name: 'Sarah Johnson',
+            level: '300',
+            college: 'College of Engineering',
+            email: 'demo@university.edu',
+            password: 'demo123',
+            isTutor: true,
+            profilePic: null,
+            canTeach: ['MTH301', 'PHY301', 'ENG301'],
+            availableTimes: ['Mon 9AM-12PM', 'Wed 2PM-5PM', 'Fri 9AM-12PM'],
+            telegram: '@sarahtutors',
+            studentsTaught: 24
+        };
+
+        users['demo2@university.edu'] = {
+            name: 'Michael Chen',
+            level: '400',
+            college: 'College of Science',
+            email: 'demo2@university.edu',
+            password: 'demo123',
+            isTutor: true,
+            profilePic: null,
+            canTeach: ['MTH401', 'Research', 'Project'],
+            availableTimes: ['Tue 9AM-12PM', 'Thu 2PM-5PM'],
+            telegram: '@michaelchen',
+            studentsTaught: 18
+        };
+
+        users['demo3@university.edu'] = {
+            name: 'Emma Williams',
+            level: '200',
+            college: 'College of Engineering',
+            email: 'demo3@university.edu',
+            password: 'demo123',
+            isTutor: true,
+            profilePic: null,
+            canTeach: ['MTH201', 'PHY201', 'CHM201'],
+            availableTimes: ['Mon 2PM-5PM', 'Wed 9AM-12PM', 'Fri 2PM-5PM'],
+            telegram: '@emmawilliams',
+            studentsTaught: 31
+        };
+
+        // Load initial pages
+        loadHomePage();
+        loadTutorsPage();
+    </script>
+</body>
+</html>
