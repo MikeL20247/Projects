@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECKMATE - Chess Improvement Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2D5F2E;
+            --light-green: #4A7C4E;
+            --accent-green: #6BA86C;
+            --pale-green: #E8F5E9;
+            --white: #FFFFFF;
+            --dark: #1A1A1A;
+            --gray: #F5F5F5;
+            --border: #D0D0D0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation & Header */
+        .navbar {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .navbar-brand::before {
+            content: "♔";
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-direction: row;
+            margin: 0;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            padding: 0.5rem 0;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            border-bottom-color: var(--accent-green);
+        }
+
+        .nav-links a.active {
+            border-bottom: 3px solid var(--accent-green);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--pale-green);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Auth Page */
+        .auth-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 3rem;
+            background: var(--pale-green);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .auth-container h1 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            background: var(--white);
+            color: var(--primary-green);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--primary-green);
+            color: var(--white);
+            border-color: var(--primary-green);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .chess-requirement {
+            background: var(--white);
+            padding: 1rem;
+            border-left: 4px solid var(--accent-green);
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .chess-requirement strong {
+            color: var(--primary-green);
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .stat-badge {
+            background: var(--pale-green);
+            color: var(--primary-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .mentor-card {
+            background: var(--pale-green);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .mentor-card strong {
+            color: var(--primary-green);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .player-card {
+            background: var(--pale-green);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .player-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .player-rating {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-badge {
+            font-size: 0.8rem;
+            background: var(--white);
+            color: var(--primary-green);
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .add-friend-btn {
+            margin-top: 0.5rem;
+            background: var(--accent-green);
+            color: var(--white);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-friend-btn:hover {
+            background: var(--light-green);
+        }
+
+        .add-friend-btn.added {
+            background: #4CAF50;
+        }
+
+        /* Friends Section */
+        .friends-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--pale-green);
+            border-radius: 12px;
+        }
+
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .friend-card {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid var(--accent-green);
+            position: relative;
+        }
+
+        .friend-card .remove-friend {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .friend-card .remove-friend:hover {
+            background: #cc5555;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .friend-rating {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-friends {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+        }
+
+        /* Game Sharing */
+        .game-submission {
+            background: var(--pale-green);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 12px rgba(75, 124, 78, 0.15);
+        }
+
+        .game-card h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .game-card .meta {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .game-card .comments-count {
+            color: var(--accent-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Game Detail Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--pale-green);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+        }
+
+        .modal-close:hover {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .chat-section {
+            border-top: 2px solid var(--border);
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+        }
+
+        .chat-section h4 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            background: var(--gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .message-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .message-input input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        /* Learning Hub */
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            box-shadow: 0 4px 12px rgba(75, 124, 78, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 3rem;
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-category {
+            display: inline-block;
+            background: var(--pale-green);
+            color: var(--primary-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-card h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-section {
+            background: var(--pale-green);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 2px dashed var(--accent-green);
+        }
+
+        .admin-section h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        /* Community Chat */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--gray);
+        }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .chat-input-area button {
+            background: var(--accent-green);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .chat-input-area button:hover {
+            background: var(--light-green);
+        }
+
+        .community-message {
+            background: var(--white);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .community-message.mentor {
+            border-left-color: #FFB800;
+            background: #FFFBF0;
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background: #FFB800;
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .navbar-brand {
+                flex-basis: 100%;
+            }
+
+            .nav-links {
+                flex-basis: 100%;
+                gap: 1rem;
+                justify-content: flex-start;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+
+            .user-menu {
+                flex-basis: 100%;
+                justify-content: flex-start;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+
+        .empty-state h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="navbar-brand">CHECKMATE</div>
+        <ul class="nav-links" id="navLinks">
+            <a onclick="showSection('dashboard')">Dashboard</a>
+            <a onclick="showSection('games')">Games</a>
+            <a onclick="showSection('learning')">Learning</a>
+            <a onclick="showSection('community')">Community</a>
+        </ul>
+        <div class="user-menu">
+            <div class="user-info">
+                <div id="userName">User</div>
+                <div style="font-size: 0.8rem;">Rating: <span id="userRating">0</span></div>
+            </div>
+            <button class="btn btn-secondary btn-small" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Auth Section -->
+    <div id="auth" class="section active">
+        <div class="auth-container">
+            <h1>♔ CHECKMATE</h1>
+            <p>Your Chess Improvement Hub</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" onclick="switchAuthTab('signup')">Sign Up</button>
+                <button class="auth-tab-btn" onclick="switchAuthTab('login')">Login</button>
+            </div>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form active" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="chess-requirement">
+                    <strong>🔗 Chess.com Account Required</strong>
+                    <p style="margin-top: 0.5rem;">Sign up using your Chess.com username to join our community.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Chess.com Username *</label>
+                    <input type="text" id="signupChessUsername" placeholder="e.g., Magnus2000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Current Rating (ELO) *</label>
+                    <input type="number" id="signupRating" placeholder="e.g., 1500" min="0" max="3000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Display Name *</label>
+                    <input type="text" id="signupDisplayName" placeholder="Your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem;">Join CHECKMATE</button>
+            </form>
+
+            <!-- Login Form -->
+            <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Chess.com Username *</label>
+                    <input type="text" id="loginChessUsername" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+            </form>
+
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #666;">
+                By signing up, you confirm you have a valid Chess.com account.
+            </p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Welcome to CHECKMATE</h2>
+            
+            <div class="dashboard-grid">
+                <!-- Profile Card -->
+                <div class="card">
+                    <h3>Your Profile</h3>
+                    <p><strong>Username:</strong> <span id="dashUsername"></span> <span id="adminBadge"></span></p>
+                    <p><strong>Rating:</strong> <span id="dashRating"></span></p>
+                    <p><strong>Games Shared:</strong> <span id="gamesCount">0</span></p>
+                    <div class="stat-badge">Member</div>
+                </div>
+
+                <!-- Mentor Match -->
+                <div class="card">
+                    <h3>Mentor Status</h3>
+                    <div id="mentorContent">
+                        <p style="margin-bottom: 1rem;">Loading mentor information...</p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h3>Platform Stats</h3>
+                    <p><strong>Total Players:</strong> <span id="totalPlayers">1</span></p>
+                    <p><strong>Games Analyzed:</strong> <span id="totalGames">0</span></p>
+                    <p><strong>Active Discussions:</strong> <span id="activeChats">0</span></p>
+                    <div class="stat-badge">Growing Community</div>
+                </div>
+            </div>
+
+            <!-- All Players -->
+            <div style="margin-top: 3rem;">
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">🏆 Top Community Players</h3>
+                <div class="players-grid" id="playersGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Section -->
+    <div id="games" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Game Library & Analysis</h2>
+
+            <div class="game-submission">
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Share Your Game</h3>
+                <form onsubmit="handleGameSubmit(event)">
+                    <div class="form-group">
+                        <label>Game Title</label>
+                        <input type="text" id="gameTitle" placeholder="e.g., My First Win Against 1400" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Result</label>
+                        <select id="result" required>
+                            <option>Win</option>
+                            <option>Loss</option>
+                            <option>Draw</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PGN or Chess.com Link</label>
+                        <input type="text" id="gamePgn" placeholder="Paste PGN or chess.com game link" required>
+                    </div>
+
+                    <button class="btn btn-primary">Share Game</button>
+                </form>
+            </div>
+
+            <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Community Games</h3>
+            <div class="game-list" id="gamesList"></div>
+        </div>
+    </div>
+
+    <!-- Learning Hub -->
+    <div id="learning" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Learning Hub</h2>
+
+            <div id="adminPanel" class="admin-section" style="display: none;">
+                <h3>👑 Admin Panel - Add Learning Resource</h3>
+                <form onsubmit="handleAddVideo(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label>Video Title</label>
+                            <input type="text" id="videoTitle" placeholder="e.g., Sicilian Defense Basics" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="videoCategory" required>
+                                <option>Openings</option>
+                                <option>Middlegame</option>
+                                <option>Endgame</option>
+                                <option>Strategy</option>
+                                <option>Tactics</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="videoDesc" placeholder="Brief description" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="url" id="videoUrl" placeholder="https://youtube.com/watch?v=..." required>
+                    </div>
+
+                    <button class="btn btn-primary">Add Resource</button>
+                </form>
+            </div>
+
+            <div class="learning-grid" id="learningGrid"></div>
+        </div>
+    </div>
+
+    <!-- Community Chat -->
+    <div id="community" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Community Discussion</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="communityMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="communityInput" placeholder="Share a thought or question...">
+                    <button onclick="sendCommunityMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Detail Modal -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Admin credentials
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "admin123";
+
+        // State Management
+        let currentUser = null;
+        let allUsers = [];
+        let games = [];
+        let videos = [];
+        let communityMessages = [];
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllData();
+            const userKey = localStorage.getItem('currentUserKey');
+            if (userKey) {
+                const user = JSON.parse(localStorage.getItem(userKey) || '{}');
+                currentUser = user;
+                loadUserData();
+                showMainApp();
+            }
+        });
+
+        // Load/Save Functions
+        function loadAllData() {
+            const stored = localStorage.getItem('allUsers');
+            allUsers = stored ? JSON.parse(stored) : [];
+            
+            const storedGames = localStorage.getItem('allGames');
+            games = storedGames ? JSON.parse(storedGames) : [];
+            
+            const storedVideos = localStorage.getItem('allVideos');
+            videos = storedVideos ? JSON.parse(storedVideos) : [];
+            
+            const storedMessages = localStorage.getItem('allMessages');
+            communityMessages = storedMessages ? JSON.parse(storedMessages) : [];
+        }
+
+        function loadUserData() {
+            if (!currentUser) return;
+            const userGames = games.filter(g => g.authorUsername === currentUser.chessUsername);
+            const userVideos = videos.filter(v => v.authorUsername === currentUser.chessUsername);
+        }
+
+        function saveAllData() {
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
+            localStorage.setItem('allGames', JSON.stringify(games));
+            localStorage.setItem('allVideos', JSON.stringify(videos));
+            localStorage.setItem('allMessages', JSON.stringify(communityMessages));
+        }
+
+        // Auth Tab Switching
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+            
+            if (tab === 'signup') {
+                document.getElementById('signupForm').classList.add('active');
+                document.querySelector('[onclick="switchAuthTab(\'signup\')"]').classList.add('active');
+            } else {
+                document.getElementById('loginForm').classList.add('active');
+                document.querySelector('[onclick="switchAuthTab(\'login\')"]').classList.add('active');
+            }
+        }
+
+        // Auth Functions
+        function handleSignup(e) {
+            e.preventDefault();
+            const chessUsername = document.getElementById('signupChessUsername').value;
+            const rating = parseInt(document.getElementById('signupRating').value);
+            const displayName = document.getElementById('signupDisplayName').value;
+            const password = document.getElementById('signupPassword').value;
+
+            // Check if user exists
+            if (allUsers.some(u => u.chessUsername === chessUsername)) {
+                alert('Username already exists!');
+                return;
+            }
+
+            const newUser = {
+                chessUsername,
+                displayName,
+                rating,
+                password,
+                isMentor: rating >= 1600,
+                joinedDate: new Date().toLocaleDateString()
+            };
+
+            allUsers.push(newUser);
+            saveAllData();
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUserKey', JSON.stringify(newUser));
+            showMainApp();
+            document.getElementById('signupForm').reset();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const chessUsername = document.getElementById('loginChessUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Check admin login
+            if (chessUsername === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                currentUser = {
+                    chessUsername: ADMIN_USERNAME,
+                    displayName: 'Admin',
+                    rating: 2400,
+                    isAdmin: true,
+                    isMentor: true
+                };
+                localStorage.setItem('currentUserKey', JSON.stringify(currentUser));
+                showMainApp();
+                return;
+            }
+
+            // Check regular user login
+            const user = allUsers.find(u => u.chessUsername === chessUsername && u.password === password);
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUserKey', JSON.stringify(user));
+                showMainApp();
+                document.getElementById('loginForm').reset();
+            } else {
+                alert('Invalid username or password!');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUserKey');
+            document.getElementById('auth').classList.add('active');
+            document.getElementById('navbar').style.display = 'none';
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('games').classList.remove('active');
+            document.getElementById('learning').classList.remove('active');
+            document.getElementById('community').classList.remove('active');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth').classList.remove('active');
+            document.getElementById('navbar').style.display = 'flex';
+            updateUI();
+            showSection('dashboard');
+            checkAdmin();
+        }
+
+        // UI Navigation
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            if (id === 'dashboard') {
+                updateDashboard();
+            } else if (id === 'learning') {
+                renderLearning();
+            } else if (id === 'community') {
+                renderCommunityChat();
+            } else if (id === 'games') {
+                renderGames();
+            }
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.displayName;
+                document.getElementById('userRating').textContent = currentUser.rating;
+                document.getElementById('dashUsername').textContent = currentUser.chessUsername;
+                document.getElementById('dashRating').textContent = currentUser.rating;
+                
+                const adminBadge = document.getElementById('adminBadge');
+                if (currentUser.isAdmin) {
+                    adminBadge.innerHTML = '<span class="admin-badge">👑 ADMIN</span>';
+                } else {
+                    adminBadge.innerHTML = '';
+                }
+                
+                document.getElementById('totalPlayers').textContent = allUsers.length;
+            }
+        }
+
+        function updateMentorStatus() {
+            const content = document.getElementById('mentorContent');
+            if (!currentUser) return;
+
+            if (currentUser.isMentor) {
+                content.innerHTML = `
+                    <p style="color: var(--primary-green); font-weight: 600; margin-bottom: 1rem;">🏆 You're a Mentor!</p>
+                    <p>You're helping lower-rated players improve. Keep sharing knowledge!</p>
+                    <div class="stat-badge" style="margin-top: 1rem;">Rating: ${currentUser.rating}+</div>
+                `;
+            } else {
+                const mentors = allUsers.filter(u => u.isMentor);
+                if (mentors.length > 0) {
+                    const mentor = mentors[Math.floor(Math.random() * mentors.length)];
+                    content.innerHTML = `
+                        <p style="margin-bottom: 1rem;">Your Assigned Mentor:</p>
+                        <div class="mentor-card">
+                            <strong>${mentor.displayName}</strong>
+                            <div style="font-size: 0.9rem; color: var(--primary-green);">Rating: ${mentor.rating}</div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">Message them to start analyzing your games together!</p>
+                    `;
+                } else {
+                    content.innerHTML = '<p>No mentors available yet. Keep improving!</p>';
+                }
+            }
+        }
+
+        function updateDashboard() {
+            document.getElementById('gamesCount').textContent = games.filter(g => g.authorUsername === currentUser.chessUsername).length;
+            document.getElementById('totalGames').textContent = games.length;
+            document.getElementById('activeChats').textContent = games.reduce((sum, g) => sum + (g.comments?.length || 0), 0);
+            updateMentorStatus();
+            renderPlayersGrid();
+        }
+
+        function renderPlayersGrid() {
+            const grid = document.getElementById('playersGrid');
+            const topPlayers = [...allUsers].sort((a, b) => b.rating - a.rating).slice(0, 8);
+            
+            grid.innerHTML = topPlayers.map(player => `
+                <div class="player-card">
+                    <div class="player-name">${player.displayName}</div>
+                    <div class="player-rating">Rating: ${player.rating}</div>
+                    <div class="player-badge">${player.isMentor ? '🏆 Mentor' : '📚 Learning'}</div>
+                </div>
+            `).join('');
+        }
+
+        // Games Functions
+        function handleGameSubmit(e) {
+            e.preventDefault();
+            const game = {
+                id: Date.now(),
+                title: document.getElementById('gameTitle').value,
+                result: document.getElementById('result').value,
+                pgn: document.getElementById('gamePgn').value,
+                authorUsername: currentUser.chessUsername,
+                author: currentUser.displayName,
+                authorRating: currentUser.rating,
+                date: new Date().toLocaleDateString(),
+                comments: []
+            };
+
+            games.push(game);
+            saveAllData();
+            renderGames();
+            document.querySelector('#games form').reset();
+            alert('Game shared successfully!');
+        }
+
+        function renderGames() {
+            const container = document.getElementById('gamesList');
+            if (games.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><h4>No games shared yet</h4><p>Be the first to share a game for analysis!</p></div>';
+                return;
+            }
+
+            container.innerHTML = games.map(g => `
+                <div class="game-card" onclick="openGameDetail(${g.id})">
+                    <h4>${g.title}</h4>
+                    <div class="meta">
+                        <div><strong>Result:</strong> ${g.result}</div>
+                        <div><strong>By:</strong> ${g.author} (${g.authorRating})</div>
+                        <div>${g.date}</div>
+                    </div>
+                    <div class="comments-count">💬 ${g.comments?.length || 0} comments</div>
+                </div>
+            `).join('');
+        }
+
+        function openGameDetail(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            const html = `
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">${game.title}</h3>
+                <p><strong>Result:</strong> ${game.result}</p>
+                <p><strong>Author:</strong> ${game.author} (${game.authorRating})</p>
+                <p><strong>Date:</strong> ${game.date}</p>
+                <p style="margin-top: 1rem; padding: 1rem; background: var(--pale-green); border-radius: 6px;">
+                    <strong>PGN/Link:</strong><br>
+                    <code style="font-size: 0.85rem; word-break: break-all;">${game.pgn}</code>
+                </p>
+
+                <div class="chat-section">
+                    <h4>Discussion & Feedback</h4>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${(game.comments || []).map((c, i) => `
+                            <div class="message">
+                                <div class="message-author">${c.author}</div>
+                                <div>${c.text}</div>
+                                <div class="message-time">${c.time}</div>
+                            </div>
+                        `).join('') || '<p style="color: #999;">No comments yet. Be the first to analyze!</p>'}
+                    </div>
+
+                    <div class="message-input">
+                        <input type="text" id="commentInput" placeholder="Add your feedback...">
+                        <button class="btn btn-primary btn-small" onclick="addGameComment(${game.id})">Post</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('gameModal').classList.add('active');
+        }
+
+        function addGameComment(gameId) {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            if (!game.comments) game.comments = [];
+            game.comments.push({
+                author: currentUser.displayName,
+                text,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            saveAllData();
+            input.value = '';
+            openGameDetail(gameId);
+        }
+
+        function closeModal() {
+            document.getElementById('gameModal').classList.remove('active');
+        }
+
+        // Learning Hub
+        function checkAdmin() {
+            const panel = document.getElementById('adminPanel');
+            if (currentUser && currentUser.isAdmin) {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        function handleAddVideo(e) {
+            e.preventDefault();
+            const video = {
+                id: Date.now(),
+                title: document.getElementById('videoTitle').value,
+                category: document.getElementById('videoCategory').value,
+                description: document.getElementById('videoDesc').value,
+                url: document.getElementById('videoUrl').value,
+                authorUsername: currentUser.chessUsername,
+                comments: []
+            };
+
+            videos.push(video);
+            saveAllData();
+            renderLearning();
+            document.querySelector('#adminPanel form').reset();
+            alert('Learning resource added!');
+        }
+
+        function renderLearning() {
+            const container = document.getElementById('learningGrid');
+            if (videos.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><h4>No learning resources yet</h4><p>Admin will add videos soon!</p></div>';
+                return;
+            }
+
+            container.innerHTML = videos.map(v => `
+                <div class="video-card" onclick="openVideoDetail(${v.id})">
+                    <div class="video-thumbnail">▶</div>
+                    <div class="video-info">
+                        <div class="video-category">${v.category}</div>
+                        <h4>${v.title}</h4>
+                        <p>${v.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openVideoDetail(videoId) {
+            const video = videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            const html = `
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">${video.title}</h3>
+                <div style="width: 100%; aspect-ratio: 16/9; background: var(--primary-green); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem; border-radius: 8px; margin-bottom: 1rem;">▶</div>
+                <p><strong>Category:</strong> ${video.category}</p>
+                <p style="margin-top: 1rem;">${video.description}</p>
+
+                <div class="chat-section">
+                    <h4>Learner Discussion</h4>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        ${(video.comments || []).map((c, i) => `
+                            <div class="message">
+                                <div class="message-author">${c.author}</div>
+                                <div>${c.text}</div>
+                            </div>
+                        `).join('') || '<p style="color: #999;">Be the first to comment on this lesson!</p>'}
+                    </div>
+
+                    <div class="message-input">
+                        <input type="text" id="videoCommentInput" placeholder="Share your thoughts...">
+                        <button class="btn btn-primary btn-small" onclick="addVideoComment(${video.id})">Comment</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('gameModal').classList.add('active');
+        }
+
+        function addVideoComment(videoId) {
+            const input = document.getElementById('videoCommentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const video = videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            if (!video.comments) video.comments = [];
+            video.comments.push({
+                author: currentUser.displayName,
+                text
+            });
+
+            saveAllData();
+            input.value = '';
+            openVideoDetail(videoId);
+        }
+
+        // Community Chat
+        function renderCommunityChat() {
+            const container = document.getElementById('communityMessages');
+            if (communityMessages.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Welcome to community discussion! Say hello...</div>';
+                return;
+            }
+
+            container.innerHTML = communityMessages.map(m => `
+                <div class="community-message ${m.isMentor ? 'mentor' : ''}">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <strong style="color: var(--primary-green);">${m.author}${m.isMentor ? ' 🏆' : ''}${m.isAdmin ? ' 👑' : ''}</strong>
+                        <span style="font-size: 0.8rem; color: #999;">${m.time}</span>
+                    </div>
+                    <div>${m.text}</div>
+                </div>
+            `).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendCommunityMessage() {
+            const input = document.getElementById('communityInput');
+            const text = input.value.trim();
+            if (!text || !currentUser) return;
+
+            communityMessages.push({
+                author: currentUser.displayName,
+                text,
+                isMentor: currentUser.isMentor,
+                isAdmin: currentUser.isAdmin,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            if (communityMessages.length > 100) communityMessages.shift();
+
+            saveAllData();
+            input.value = '';
+            renderCommunityChat();
+        }
+
+        // Allow Enter key in chat
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (document.activeElement?.id === 'communityInput') {
+                    sendCommunityMessage();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
