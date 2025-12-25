@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECKMATE - Chess Improvement Hub</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+   
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2D5F2E;
+            --light-green: #4A7C4E;
+            --accent-green: #6BA86C;
+            --pale-green: #E8F5E9;
+            --white: #FFFFFF;
+            --dark: #1A1A1A;
+            --gray: #F5F5F5;
+            --border: #D0D0D0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--white);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .navbar-brand::before {
+            content: "♔";
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            padding: 0.5rem 0;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            border-bottom-color: var(--accent-green);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--pale-green);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 3rem;
+            background: var(--pale-green);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .auth-container h1 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            background: var(--white);
+            color: var(--primary-green);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--primary-green);
+            color: var(--white);
+            border-color: var(--primary-green);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .chess-requirement {
+            background: var(--white);
+            padding: 1rem;
+            border-left: 4px solid var(--accent-green);
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .stat-badge {
+            background: var(--pale-green);
+            color: var(--primary-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .mentor-card {
+            background: var(--pale-green);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .player-card {
+            background: var(--pale-green);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .player-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .player-name a {
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+
+        .player-rating {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-badge {
+            font-size: 0.8rem;
+            background: var(--white);
+            color: var(--primary-green);
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .player-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .add-friend-btn {
+            background: var(--accent-green);
+            color: var(--white);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-friend-btn.added {
+            background: #4CAF50;
+        }
+
+        .play-btn {
+            background: #FF6B35;
+            color: var(--white);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .friends-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--pale-green);
+            border-radius: 12px;
+        }
+
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .friend-card {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid var(--accent-green);
+            position: relative;
+        }
+
+        .friend-card .remove-friend {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .game-submission {
+            background: var(--pale-green);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card h4 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--pale-green);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .chat-section {
+            border-top: 2px solid var(--border);
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+        }
+
+        .message {
+            background: var(--gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .message-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid var(--light-green);
+            border-radius: 6px;
+        }
+
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .video-delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 10;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .video-delete-btn:hover {
+            background: #FF5252;
+            transform: scale(1.1);
+        }
+
+        .video-delete-btn:active {
+            transform: scale(0.95);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 3rem;
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-category {
+            display: inline-block;
+            background: var(--pale-green);
+            color: var(--primary-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-section {
+            background: var(--pale-green);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 2px dashed var(--accent-green);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--gray);
+        }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            background: var(--pale-green);
+            border-top: 3px solid var(--accent-green);
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid var(--accent-green);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--white);
+            transition: all 0.3s;
+        }
+        
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(107, 168, 108, 0.1);
+        }
+        
+        .chat-input-area button {
+            padding: 0.9rem 2rem;
+            background: var(--accent-green);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .chat-input-area button:hover {
+            background: var(--primary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 95, 46, 0.2);
+        }
+        
+        .chat-input-area button:active {
+            transform: translateY(0);
+        }
+
+        .community-message {
+            background: var(--white);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .community-message.mentor {
+            border-left-color: #FFB800;
+            background: #FFFBF0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="navbar-brand">CHECKMATE</div>
+        <ul class="nav-links">
+            <a onclick="showSection('dashboard')">Dashboard</a>
+            <a onclick="showSection('games')">Games</a>
+            <a onclick="showSection('learning')">Learning</a>
+            <a onclick="showSection('community')">Community</a>
+        </ul>
+        <div class="user-menu">
+            <div class="user-info">
+                <div id="userName">User</div>
+                <div style="font-size: 0.8rem;">Rating: <span id="userRating">0</span></div>
+            </div>
+            <button class="btn btn-secondary btn-small" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div id="auth" class="section active">
+        <div class="auth-container">
+            <h1>♔ CHECKMATE</h1>
+            <p>Your Chess Improvement Hub</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" onclick="switchAuthTab('signup')">Sign Up</button>
+                <button class="auth-tab-btn" onclick="switchAuthTab('login')">Login</button>
+            </div>
+
+            <form class="auth-form active" id="signupForm" onsubmit="handleSignup(event)">
+                <div class="chess-requirement">
+                    <strong>🔗 Chess.com Account Required</strong>
+                    <p style="margin-top: 0.5rem;">Sign up using your Chess.com username to join our community.</p>
+                </div>
+                <div class="form-group">
+                    <label>Chess.com Username *</label>
+                    <input type="text" id="signupChessUsername" placeholder="e.g., Magnus2000" required>
+                </div>
+                <div class="form-group">
+                    <label>Current Rating (ELO) *</label>
+                    <input type="number" id="signupRating" placeholder="e.g., 1500" min="0" max="3000" required>
+                </div>
+                <div class="form-group">
+                    <label>Display Name *</label>
+                    <input type="text" id="signupDisplayName" placeholder="Your name" required>
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem;">Join CHECKMATE</button>
+            </form>
+
+            <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Chess.com Username *</label>
+                    <input type="text" id="loginChessUsername" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+            </form>
+
+            <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #666;">
+                By signing up, you confirm you have a valid Chess.com account.
+            </p>
+        </div>
+    </div>
+
+    <div id="dashboard" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Welcome to CHECKMATE</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Your Profile</h3>
+                    <p><strong>Username:</strong> <span id="dashUsername"></span> <span id="adminBadge"></span></p>
+                    <p><strong>Rating:</strong> <span id="dashRating"></span></p>
+                    <p><strong>Games Shared:</strong> <span id="gamesCount">0</span></p>
+                    <div class="stat-badge">Member</div>
+                </div>
+                <div class="card">
+                    <h3>Mentor Status</h3>
+                    <div id="mentorContent">
+                        <p>Loading mentor information...</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Platform Stats</h3>
+                    <p><strong>Total Players:</strong> <span id="totalPlayers">1</span></p>
+                    <p><strong>Games Analyzed:</strong> <span id="totalGames">0</span></p>
+                    <p><strong>Active Discussions:</strong> <span id="activeChats">0</span></p>
+                    <div class="stat-badge">Growing Community</div>
+                </div>
+            </div>
+            <div style="margin-top: 3rem;">
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">🏆 Top Community Players</h3>
+                <div class="players-grid" id="playersGrid"></div>
+            </div>
+            <div class="friends-section">
+                <h3 style="color: var(--primary-green);">👥 My Friends</h3>
+                <div class="friends-grid" id="friendsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="games" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Game Library & Analysis</h2>
+            <div class="game-submission">
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Share Your Game</h3>
+                <form onsubmit="handleGameSubmit(event)">
+                    <div class="form-group">
+                        <label>Game Title</label>
+                        <input type="text" id="gameTitle" placeholder="e.g., My First Win Against 1400" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Result</label>
+                        <select id="result" required>
+                            <option>Win</option>
+                            <option>Loss</option>
+                            <option>Draw</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>PGN or Chess.com Link</label>
+                        <input type="text" id="gamePgn" placeholder="Paste PGN or chess.com game link" required>
+                    </div>
+                    <button class="btn btn-primary">Share Game</button>
+                </form>
+            </div>
+            <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Community Games</h3>
+            <div class="game-list" id="gamesList"></div>
+        </div>
+    </div>
+
+    <div id="learning" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Learning Hub</h2>
+            <div id="adminPanel" class="admin-section" style="display: none;">
+                <h3>👑 Admin Panel - Add Learning Resource</h3>
+                <form onsubmit="handleAddVideo(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Video Title</label>
+                            <input type="text" id="videoTitle" placeholder="e.g., Sicilian Defense Basics" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="videoCategory" required>
+                                <option>Openings</option>
+                                <option>Middlegame</option>
+                                <option>Endgame</option>
+                                <option>Strategy</option>
+                                <option>Tactics</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="videoDesc" placeholder="Brief description" required>
+                    </div>
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="url" id="videoUrl" placeholder="https://youtube.com/watch?v=..." required>
+                    </div>
+                    <button class="btn btn-primary">Add Resource</button>
+                </form>
+            </div>
+            <div class="learning-grid" id="learningGrid"></div>
+        </div>
+    </div>
+
+    <div id="community" class="section">
+        <div class="container">
+            <h2 style="color: var(--primary-green); margin-bottom: 2rem;">Community Discussion</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="communityMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="communityInput" placeholder="Share a thought or question..." maxlength="500">
+                    <button onclick="sendCommunityMessage()">Send ➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script type="module">
+
+        // ===== FIREBASE IMPORTS =====
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut,
+            onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            getDocs,
+            addDoc,
+            query,
+            orderBy,
+            limit,
+            onSnapshot,
+            serverTimestamp,
+            updateDoc,
+            arrayUnion,
+            arrayRemove,
+            deleteDoc
+        } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        // ===== FIREBASE CONFIGURATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxaqqjvrW2lhGiU7sa89nL0i_yoYs1RGg",
+            authDomain: "checkmate-4c4aa.firebaseapp.com",
+            projectId: "checkmate-4c4aa",
+            storageBucket: "checkmate-4c4aa.firebasestorage.app",
+            messagingSenderId: "808029771952",
+            appId: "1:808029771952:web:916f72dd24141579160375"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Admin credentials
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "admin123";
+
+        // State Management
+        let currentUser = null;
+        let allUsers = [];
+        let games = [];
+        let videos = [];
+        let communityMessages = [];
+        let isTogglingFriend = false;
+        let scrollPositions = {};
+
+        // Make functions global
+        window.handleSignup = handleSignup;
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.switchAuthTab = switchAuthTab;
+        window.showSection = showSection;
+        window.toggleFriend = toggleFriend;
+        window.handleGameSubmit = handleGameSubmit;
+        window.openGameDetail = openGameDetail;
+        window.addGameComment = addGameComment;
+        window.closeModal = closeModal;
+        window.handleAddVideo = handleAddVideo;
+        window.openVideoDetail = openVideoDetail;
+        window.addVideoComment = addVideoComment;
+        window.sendCommunityMessage = sendCommunityMessage;
+        window.deleteVideo = deleteVideo;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllData();
+            
+            // Listen for auth state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user && !currentUser) {
+                    try {
+                        const userDoc = await getDoc(doc(db, 'users', user.uid));
+                        if (userDoc.exists()) {
+                            currentUser = { ...userDoc.data(), uid: user.uid };
+                            showMainApp();
+                        }
+                    } catch (error) {
+                        console.error('Auth state error:', error);
+                    }
+                }
+            });
+            
+            const username = localStorage.getItem('currentUser');
+            if (username) {
+                if (username === ADMIN_USERNAME) {
+                    currentUser = {
+                        chessUsername: ADMIN_USERNAME,
+                        displayName: 'Admin',
+                        rating: 2400,
+                        isAdmin: true,
+                        isMentor: true,
+                        friends: []
+                    };
+                    showMainApp();
+                } else {
+                    currentUser = allUsers.find(u => u.chessUsername === username);
+                    if (currentUser) {
+                        showMainApp();
+                    } else {
+                        logout();
+                    }
+                }
+            }
+
+            // Escape key closes modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('gameModal');
+                    if (modal && modal.classList.contains('active')) {
+                        closeModal();
+                    }
+                }
+            });
+
+            // Enter key in chat
+            document.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && document.activeElement?.id === 'communityInput') {
+                    sendCommunityMessage();
+                }
+            });
+        });
+
+        // Load/Save Functions
+        async function loadAllData() {
+            const snapshot = await getDocs(collection(db, 'users'));
+            allUsers = snapshot.docs.map(d => ({ ...d.data(), uid: d.id }));
+        }
+
+      
+
+        // Auth Tab Switching
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+            
+            if (tab === 'signup') {
+                document.getElementById('signupForm').classList.add('active');
+                document.querySelector('[onclick="switchAuthTab(\'signup\')"]').classList.add('active');
+            } else {
+                document.getElementById('loginForm').classList.add('active');
+                document.querySelector('[onclick="switchAuthTab(\'login\')"]').classList.add('active');
+            }
+        }
+
+        // FIREBASE AUTH FUNCTIONS
+        async function handleSignup(e) {
+            e.preventDefault();
+            const chessUsername = document.getElementById('signupChessUsername').value.trim().toLowerCase();
+            const rating = parseInt(document.getElementById('signupRating').value);
+            const displayName = document.getElementById('signupDisplayName').value.trim();
+            const password = document.getElementById('signupPassword').value;
+
+            // Validation
+            if (!/^[a-zA-Z0-9_-]{2,}$/.test(chessUsername)) {
+                alert('Invalid Chess.com username. Use only letters, numbers, _, and -');
+                return;
+            }
+            
+            if (displayName.length < 2 || displayName.length > 50) {
+                alert('Display name must be 2-50 characters');
+                return;
+            }
+            
+            if (password.length < 4) {
+                alert('Password must be at least 4 characters');
+                return;
+            }
+
+            try {
+                // Create Firebase user
+                const email = `${chessUsername}@checkmate.app`;
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Create user profile in Firestore
+                const userProfile = {
+                    chessUsername,
+                    displayName,
+                    rating,
+                    isMentor: rating >= 1600,
+                    joinedDate: new Date().toLocaleDateString(),
+                    friends: [],
+                    createdAt: serverTimestamp()
+                };
+
+                await setDoc(doc(db, 'users', userCredential.user.uid), userProfile);
+                
+                // Update local state
+                currentUser = { 
+                    ...userProfile, 
+                    uid: userCredential.user.uid 
+                };
+                currentUser.friends = [];
+                localStorage.setItem('currentUser', chessUsername);
+                
+                showMainApp();
+                await loadAllData();
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('Username already exists!');
+                } else {
+                    alert('Signup failed: ' + error.message);
+                }
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const chessUsername = document.getElementById('loginChessUsername').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            // Check admin login
+            if (chessUsername === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                currentUser = {
+                    uid: 'admin-uid',
+                    chessUsername: ADMIN_USERNAME,
+                    displayName: 'Admin',
+                    rating: 2400,
+                    isAdmin: true,
+                    isMentor: true,
+                    friends: []
+                };
+                currentUser.friends = currentUser.friends || [];
+                localStorage.setItem('currentUser', ADMIN_USERNAME);
+             
+
+
+               
+                document.getElementById('loginForm').reset();
+                showMainApp();
+                return;
+            }
+
+            try {
+                // Firebase login
+                const email = `${chessUsername}@checkmate.app`;
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Load user profile from Firestore
+                const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+                
+                if (userDoc.exists()) {
+                    currentUser = { 
+                        ...userDoc.data(), 
+                        uid: userCredential.user.uid 
+                    };
+                    localStorage.setItem('currentUser', chessUsername);
+                    showMainApp();
+                    document.getElementById('loginForm').reset();
+                } else {
+                    throw new Error('User profile not found');
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+                    alert('Invalid username or password!');
+                } else {
+                    alert('Login failed: ' + error.message);
+                }
+            }
+        }
+
+        async function logout() {
+            try {
+                if (currentUser && !currentUser.isAdmin) {
+                    await signOut(auth);
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+            
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Stop listening to community chat
+            if (window.unsubscribeChat) {
+                window.unsubscribeChat();
+                window.unsubscribeChat = null;
+            }
+            
+            document.getElementById('auth').classList.add('active');
+            document.getElementById('navbar').style.display = 'none';
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            const signupForm = document.getElementById('signupForm');
+            const loginForm = document.getElementById('loginForm');
+            if (signupForm) signupForm.reset();
+            if (loginForm) loginForm.reset();
+            
+            switchAuthTab('signup');
+        }
+
+        function showMainApp() {
+            document.getElementById('auth').classList.remove('active');
+            document.getElementById('navbar').style.display = 'flex';
+            updateUI();
+            showSection('dashboard');
+            checkAdmin();
+            setupModalClickOutside();
+            
+            // Start real-time listeners
+            listenToVideos();
+            listenToCommunityChat();
+        }
+
+        function setupModalClickOutside() {
+            const modal = document.getElementById('gameModal');
+            if (!modal) return;
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // UI Navigation
+        function showSection(id) {
+            const activeSection = document.querySelector('.section.active');
+            if (activeSection) {
+                scrollPositions[activeSection.id] = window.scrollY;
+            }
+
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            if (id === 'dashboard') {
+                updateDashboard();
+            } else if (id === 'learning') {
+                renderLearning();
+            } else if (id === 'community') {
+                renderCommunityChat();
+            } else if (id === 'games') {
+                renderGames();
+            }
+
+            setTimeout(() => {
+                window.scrollTo(0, scrollPositions[id] || 0);
+            }, 0);
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.displayName;
+                document.getElementById('userRating').textContent = currentUser.rating;
+                document.getElementById('dashUsername').textContent = currentUser.chessUsername;
+                document.getElementById('dashRating').textContent = currentUser.rating;
+                
+                const adminBadge = document.getElementById('adminBadge');
+                if (currentUser.isAdmin) {
+                    adminBadge.innerHTML = '<span style="background: #FFB800; color: white; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.75rem; margin-left: 0.5rem;">👑 ADMIN</span>';
+                } else {
+                    adminBadge.innerHTML = '';
+                }
+                
+                document.getElementById('totalPlayers').textContent = allUsers.length;
+            }
+        }
+
+        function updateMentorStatus() {
+            const content = document.getElementById('mentorContent');
+            if (!currentUser) return;
+
+            if (currentUser.isMentor) {
+                content.innerHTML = `
+                    <p style="color: var(--primary-green); font-weight: 600; margin-bottom: 1rem;">🏆 You're a Mentor!</p>
+                    <p>You're helping lower-rated players improve. Keep sharing knowledge!</p>
+                    <div class="stat-badge" style="margin-top: 1rem;">Rating: ${currentUser.rating}+</div>
+                `;
+            } else {
+                const mentors = allUsers.filter(u => u.isMentor);
+                if (mentors.length > 0) {
+                    const mentor = mentors[Math.floor(Math.random() * mentors.length)];
+                    content.innerHTML = `
+                        <p style="margin-bottom: 1rem;">Your Assigned Mentor:</p>
+                        <div class="mentor-card">
+                            <strong>${mentor.displayName}</strong>
+                            <div style="font-size: 0.9rem; color: var(--primary-green);">Rating: ${mentor.rating}</div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">Message them to start analyzing your games together!</p>
+                    `;
+                } else {
+                    content.innerHTML = '<p>No mentors available yet. Keep improving!</p>';
+                }
+            }
+        }
+
+        function updateDashboard() {
+            document.getElementById('gamesCount').textContent = games.filter(g => g.authorUsername === currentUser.chessUsername).length;
+            document.getElementById('totalGames').textContent = games.length;
+            document.getElementById('activeChats').textContent = games.reduce((sum, g) => sum + (g.comments?.length || 0), 0);
+            updateMentorStatus();
+            renderPlayersGrid();
+            renderFriendsSection();
+        }
+
+        function renderPlayersGrid() {
+            const grid = document.getElementById('playersGrid');
+            if (!grid) return;
+            
+            const topPlayers = [...allUsers].sort((a, b) => b.rating - a.rating).slice(0, 8);
+            
+            if (topPlayers.length === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">No players yet</div>';
+                return;
+            }
+            
+            grid.innerHTML = topPlayers.map(player => {
+                if (!currentUser.friends) currentUser.friends = [];
+                const isFriend = currentUser.friends.includes(player.chessUsername);
+                const isOwnProfile = player.chessUsername === currentUser.chessUsername;
+                const avatarName = encodeURIComponent(player.displayName || player.chessUsername);
+                const avatarUrl = `https://ui-avatars.com/api/?name=${avatarName}&background=4A7C4E&color=fff&rounded=true`;
+                
+                return `
+                    <div class="player-card">
+                        <img src="${avatarUrl}" alt="${player.displayName}" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 0.5rem; display: block;">
+                        <div class="player-name">
+                            <a href="https://www.chess.com/member/${encodeURIComponent(player.chessUsername)}" target="_blank">
+                                ${player.displayName}
+                            </a>
+                        </div>
+                        <div class="player-rating">Rating: ${player.rating}</div>
+                        <div class="player-badge">${player.isMentor ? '🏆 Mentor' : '📚 Learning'}</div>
+                        <div class="player-actions">
+                            ${!isOwnProfile ? `
+                                <button class="add-friend-btn ${isFriend ? 'added' : ''}" onclick="toggleFriend('${player.chessUsername}')">
+                                    ${isFriend ? '✓ Friend' : '+ Add'}
+                                </button>
+                                <a href="https://www.chess.com/play/online?username=${encodeURIComponent(player.chessUsername)}" target="_blank" class="play-btn">
+                                    ▶ Play
+                                </a>
+                            ` : '<div style="padding: 0.4rem; font-size: 0.8rem; color: var(--primary-green);">Your Profile</div>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+       async function toggleFriend(friendUsername) {
+    if (!currentUser || !currentUser.uid) return;
+
+    if (friendUsername === currentUser.chessUsername) {
+        alert("You can't add yourself.");
+        return;
+    }
+
+    if (isTogglingFriend) return;
+    isTogglingFriend = true;
+
+    try {
+        const userRef = doc(db, 'users', currentUser.uid);
+
+        const isFriend = currentUser.friends?.includes(friendUsername);
+
+        if (isFriend) {
+            await updateDoc(userRef, {
+                friends: arrayRemove(friendUsername)
+            });
+            currentUser.friends =
+                currentUser.friends.filter(f => f !== friendUsername);
+        } else {
+            await updateDoc(userRef, {
+                friends: arrayUnion(friendUsername)
+            });
+            currentUser.friends = [...(currentUser.friends || []), friendUsername];
+        }
+
+        renderPlayersGrid();
+        renderFriendsSection();
+
+    } catch (error) {
+        console.error('Friend update failed:', error);
+        alert('Could not update friends. Try again.');
+    } finally {
+        isTogglingFriend = false;
+    }
+        }
+
+        function renderFriendsSection() {
+            const friendsList = document.getElementById('friendsList');
+            if (!friendsList) return;
+            
+            if (!currentUser.friends || currentUser.friends.length === 0) {
+                friendsList.innerHTML = '<div style="text-align: center; color: #999; padding: 2rem;">No friends added yet. Add some from the community!</div>';
+                return;
+            }
+
+            const friendUsers = allUsers.filter(u => currentUser.friends.includes(u.chessUsername));
+            friendsList.innerHTML = friendUsers.map(friend => {
+                const avatarName = encodeURIComponent(friend.displayName || friend.chessUsername);
+                const avatarUrl = `https://ui-avatars.com/api/?name=${avatarName}&background=4A7C4E&color=fff&rounded=true`;
+                
+                return `
+                    <div class="friend-card">
+                        <button class="remove-friend" onclick="toggleFriend('${friend.chessUsername}')">✕</button>
+                        <img src="${avatarUrl}" alt="${friend.displayName}" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 0.5rem; display: block;">
+                        <div style="font-weight: 600; color: var(--primary-green); margin-bottom: 0.5rem;">
+                            <a href="https://www.chess.com/member/${encodeURIComponent(friend.chessUsername)}" target="_blank" style="color: var(--accent-green); text-decoration: none;">
+                                ${friend.displayName}
+                            </a>
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Rating: ${friend.rating}</div>
+                        <div class="player-badge">${friend.isMentor ? '🏆 Mentor' : '📚 Learning'}</div>
+                        <div class="player-actions" style="margin-top: 0.8rem;">
+                            <a href="https://www.chess.com/play/online?username=${encodeURIComponent(friend.chessUsername)}" target="_blank" class="play-btn">
+                                ▶ Play Now
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Games Functions
+        function handleGameSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('gameTitle').value.trim();
+            const pgn = document.getElementById('gamePgn').value.trim();
+            
+            if (title.length < 3 || title.length > 100) {
+                alert('Game title must be 3-100 characters');
+                return;
+            }
+            if (pgn.length < 5) {
+                alert('Please provide a valid PGN or link');
+                return;
+            }
+
+            const game = {
+                id: Date.now(),
+                title,
+                result: document.getElementById('result').value,
+                pgn,
+                authorUsername: currentUser.chessUsername,
+                author: currentUser.displayName,
+                authorRating: currentUser.rating,
+                date: new Date().toLocaleDateString(),
+                comments: []
+            };
+
+            games.push(game);
+           
+            renderGames();
+            e.target.reset();
+            document.getElementById('gameTitle').focus();
+            alert('Game shared successfully!');
+        }
+
+        function renderGames() {
+            const container = document.getElementById('gamesList');
+            if (!container) return;
+            
+            if (games.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><h4>No games shared yet</h4><p>Be the first to share a game for analysis!</p></div>';
+                return;
+            }
+
+            const sortedGames = [...games].sort((a, b) => b.id - a.id);
+
+            container.innerHTML = sortedGames.map(g => `
+                <div class="game-card" onclick="openGameDetail(${g.id})">
+                    <h4>${g.title}</h4>
+                    <div style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">
+                        <div><strong>Result:</strong> ${g.result}</div>
+                        <div><strong>By:</strong> ${g.author} (${g.authorRating})</div>
+                        <div>${g.date}</div>
+                    </div>
+                    <div style="color: var(--accent-green); font-weight: 600;">💬 ${g.comments?.length || 0} comments</div>
+                </div>
+            `).join('');
+        }
+
+        function openGameDetail(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            const html = `
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">${game.title}</h3>
+                <p><strong>Result:</strong> ${game.result}</p>
+                <p><strong>Author:</strong> ${game.author} (${game.authorRating})</p>
+                <p><strong>Date:</strong> ${game.date}</p>
+                <p style="margin-top: 1rem; padding: 1rem; background: var(--pale-green); border-radius: 6px;">
+                    <strong>PGN/Link:</strong><br>
+                    <code style="font-size: 0.85rem; word-break: break-all;">${game.pgn}</code>
+                </p>
+
+                <div class="chat-section">
+                    <h4>Discussion & Feedback</h4>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${(game.comments || []).map(c => `
+                            <div class="message">
+                                <div style="font-weight: 600; color: var(--primary-green); font-size: 0.9rem; margin-bottom: 0.3rem;">${c.author}</div>
+                                <div>${c.text}</div>
+                                <div style="font-size: 0.8rem; color: #999;">${c.time}</div>
+                            </div>
+                        `).join('') || '<p style="color: #999;">No comments yet. Be the first to analyze!</p>'}
+                    </div>
+
+                    <div class="message-input">
+                        <input type="text" id="commentInput" placeholder="Add your feedback...">
+                        <button class="btn btn-primary btn-small" onclick="addGameComment(${game.id})">Post</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('gameModal').classList.add('active');
+        }
+
+        function addGameComment(gameId) {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            if (!game.comments) game.comments = [];
+            game.comments.push({
+                author: currentUser.displayName,
+                text,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            input.value = '';
+            openGameDetail(gameId);
+        }
+
+        function closeModal() {
+            document.getElementById('gameModal').classList.remove('active');
+        }
+
+        // Learning Hub
+        function checkAdmin() {
+            const panel = document.getElementById('adminPanel');
+            if (currentUser && currentUser.isAdmin) {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        function handleAddVideo(e) {
+            e.preventDefault();
+            const title = document.getElementById('videoTitle').value.trim();
+            const description = document.getElementById('videoDesc').value.trim();
+            
+            if (title.length < 3 || title.length > 100) {
+                alert('Video title must be 3-100 characters');
+                return;
+            }
+            if (description.length < 5) {
+                alert('Please provide a description');
+                return;
+            }
+
+            const video = {
+                title,
+                category: document.getElementById('videoCategory').value,
+                description,
+                url: document.getElementById('videoUrl').value,
+                authorUsername: currentUser.chessUsername,
+                comments: [],
+                createdAt: serverTimestamp()
+            };
+
+            // Save to Firebase
+            addDoc(collection(db, 'videos'), video).then(() => {
+                e.target.reset();
+                alert('Learning resource added!');
+            }).catch(error => {
+                console.error('Error adding video:', error);
+                alert('Failed to add video. Please try again.');
+            });
+        }
+
+        function renderLearning() {
+            const container = document.getElementById('learningGrid');
+            if (videos.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><h4>No learning resources yet</h4><p>Admin will add videos soon!</p></div>';
+                return;
+            }
+
+            container.innerHTML = videos.map(v => `
+                <div style="position: relative;">
+                    ${currentUser && currentUser.isAdmin ? `<button class="video-delete-btn" onclick="deleteVideo('${v.id}')" title="Delete video">✕</button>` : ''}
+                    <div class="video-card">
+                        <a href="${v.url}" target="_blank" style="text-decoration: none; color: inherit;">
+                            <div class="video-thumbnail">▶</div>
+                            <div class="video-info">
+                                <div class="video-category">${v.category}</div>
+                                <h4>${v.title}</h4>
+                                <p style="color: #666; font-size: 0.9rem;">${v.description}</p>
+                            </div>
+                        </a>
+                        <div style="padding: 0.8rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem;">
+                            <a href="${v.url}" target="_blank" class="btn btn-primary btn-small" style="flex: 1; text-align: center;">Watch</a>
+                            <button class="btn btn-secondary btn-small" onclick="openVideoDetail('${v.id}')" style="flex: 1;">Comments</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteVideo(videoId) {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('Only admins can delete videos.');
+                return;
+            }
+
+            if (confirm('Are you sure you want to delete this video?')) {
+                // Delete from Firebase
+                deleteDoc(doc(db, 'videos', videoId)).then(() => {
+                    alert('Video deleted successfully!');
+                }).catch(error => {
+                    console.error('Error deleting video:', error);
+                    alert('Failed to delete video. Please try again.');
+                });
+            }
+        }
+
+        function openVideoDetail(videoId) {
+            const video = videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            const html = `
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">${video.title}</h3>
+                <p><strong>Category:</strong> ${video.category}</p>
+                <p style="margin-top: 1rem; margin-bottom: 1.5rem;">${video.description}</p>
+                <a href="${video.url}" target="_blank" class="btn btn-primary" style="margin-bottom: 2.5rem; display: inline-block;">Watch on YouTube</a>
+
+                <div class="chat-section">
+                    <h4>Learner Discussion</h4>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        ${(video.comments || []).map(c => `
+                            <div class="message">
+                                <div style="font-weight: 600; color: var(--primary-green); font-size: 0.9rem; margin-bottom: 0.3rem;">${c.author}</div>
+                                <div>${c.text}</div>
+                            </div>
+                        `).join('') || '<p style="color: #999;">Be the first to comment on this lesson!</p>'}
+                    </div>
+
+                    <div class="message-input">
+                        <input type="text" id="videoCommentInput" placeholder="Share your thoughts...">
+                        <button class="btn btn-primary btn-small" onclick="addVideoComment('${video.id}')">Comment</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('gameModal').classList.add('active');
+        }
+
+        function addVideoComment(videoId) {
+            const input = document.getElementById('videoCommentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const video = videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            const newComment = {
+                author: currentUser.displayName,
+                text
+            };
+
+            // Save comment to Firebase
+            updateDoc(doc(db, 'videos', videoId), {
+                comments: arrayUnion(newComment)
+            }).then(() => {
+                input.value = '';
+                openVideoDetail(videoId);
+            }).catch(error => {
+                console.error('Error adding comment:', error);
+                alert('Failed to add comment. Please try again.');
+            });
+        }
+
+        // FIREBASE COMMUNITY CHAT
+        async function sendCommunityMessage() {
+            const input = document.getElementById('communityInput');
+            if (!input || !currentUser) return;
+            
+            const text = input.value.trim();
+            if (!text) return;
+
+            try {
+                await addDoc(collection(db, 'communityChat'), {
+                    author: currentUser.displayName,
+                    chessUsername: currentUser.chessUsername,
+                    text,
+                    isMentor: currentUser.isMentor || false,
+                    isAdmin: currentUser.isAdmin || false,
+                    timestamp: serverTimestamp(),
+                    createdAt: new Date().toISOString()
+                });
+
+                input.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        // REAL-TIME COMMUNITY CHAT LISTENER
+        function listenToCommunityChat() {
+            const messagesContainer = document.getElementById('communityMessages');
+            if (!messagesContainer) return;
+
+            if (window.unsubscribeChat) {
+                window.unsubscribeChat();
+            }
+
+            const q = query(
+                collection(db, 'communityChat'),
+                orderBy('timestamp', 'desc'),
+                limit(100)
+            );
+
+            window.unsubscribeChat = onSnapshot(q, (snapshot) => {
+                const messages = [];
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    messages.push({
+                        id: doc.id,
+                        author: data.author,
+                        text: data.text,
+                        isMentor: data.isMentor || false,
+                        isAdmin: data.isAdmin || false,
+                        time: data.createdAt ? new Date(data.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Now'
+                    });
+                });
+
+                messages.reverse();
+
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">Welcome to community discussion! Say hello...</div>';
+                    return;
+                }
+
+                messagesContainer.innerHTML = messages.map(m => {
+                    const avatarName = encodeURIComponent(m.author);
+                    const avatarUrl = `https://ui-avatars.com/api/?name=${avatarName}&background=4A7C4E&color=fff&rounded=true`;
+                    
+                    return `
+                        <div class="community-message ${m.isMentor ? 'mentor' : ''}">
+                            <div style="display: flex; gap: 0.8rem; margin-bottom: 0.8rem; align-items: flex-start;">
+                                <img src="${avatarUrl}" alt="${m.author}" style="width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                        <strong style="color: var(--primary-green);">${m.author}${m.isMentor ? ' 🏆' : ''}${m.isAdmin ? ' 👑' : ''}</strong>
+                                        <span style="font-size: 0.8rem; color: #999;">${m.time}</span>
+                                    </div>
+                                    <div>${m.text}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                setTimeout(() => {
+                    if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 50);
+            }, (error) => {
+                console.error('Chat listener error:', error);
+            });
+        }
+
+        function renderCommunityChat() {
+            // Real-time listener handles rendering automatically
+        }
+
+        // REAL-TIME VIDEOS LISTENER
+        function listenToVideos() {
+            if (window.unsubscribeVideos) {
+                window.unsubscribeVideos();
+            }
+
+            const q = query(
+                collection(db, 'videos'),
+                orderBy('createdAt', 'desc')
+            );
+
+            window.unsubscribeVideos = onSnapshot(q, (snapshot) => {
+                videos = [];
+                snapshot.forEach((doc) => {
+                    videos.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                if (document.querySelector('.section.active#learning')) {
+                    renderLearning();
+                }
+            }, (error) => {
+                console.error('Videos listener error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
